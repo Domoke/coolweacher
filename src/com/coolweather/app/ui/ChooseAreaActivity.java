@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.ProgressDialog;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -58,12 +60,23 @@ public class ChooseAreaActivity extends BaseActivity {
 	public static final int LEVEL_COUNTY = 2;
 	private int currentLevel = 0;
 	
+	/**
+	 * 是否从WeatherActivity中跳转过来
+	 */
+	private boolean isFromWeatherActivity;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.choose_area);
+		
+		isFromWeatherActivity = getIntent().getBooleanExtra("is_from_weather_activity", false);
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		if (prefs.getBoolean("city_selected", false) && (!isFromWeatherActivity)) {
+			UIHelper.showWeather(this, null);
+			return;
+		}
 		
 		tvTitle = (TextView) findViewById(R.id.title_text);
 		listView = (ListView) findViewById(R.id.list_view);
@@ -237,5 +250,21 @@ public class ChooseAreaActivity extends BaseActivity {
 			progressDialog.dismiss();
 		}
 	}
-
+	
+	/**
+	 * 处理Back键事件
+	 */
+	@Override
+	public void onBackPressed() {
+		if (currentLevel == LEVEL_COUNTY) {
+			queryCities();
+		} else if (currentLevel == LEVEL_CITY) {
+			queryProvinces();
+		} else {
+			if (isFromWeatherActivity) {
+				UIHelper.showWeather(this, null);
+			}
+		}
+	}
+	
 }

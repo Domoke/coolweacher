@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -17,9 +18,11 @@ import android.widget.Toast;
 
 import com.coolweather.app.R;
 import com.coolweather.app.common.DatabaseUtils;
+import com.coolweather.app.common.DoubleClickExitHelper;
 import com.coolweather.app.common.HttpCallbackListener;
 import com.coolweather.app.common.HttpUtils4Android;
 import com.coolweather.app.common.UIHelper;
+import com.coolweather.app.service.AutoUpdateService;
 
 public class WeatherActivity extends BaseActivity {
 	
@@ -40,6 +43,11 @@ public class WeatherActivity extends BaseActivity {
 	 * 进度条对话框
 	 */
 	private ProgressDialog progressDialog;
+	
+	/**
+	 * 双击退出帮助对象
+	 */
+	private DoubleClickExitHelper mDoubleClickExitHelper;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +55,8 @@ public class WeatherActivity extends BaseActivity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.weather_layout);
 		
+		// 初始化双击退出帮助对象
+		mDoubleClickExitHelper = new DoubleClickExitHelper(this);
 		// 初始化布局
 		initView();
 		
@@ -62,6 +72,7 @@ public class WeatherActivity extends BaseActivity {
 			// 没有县级代号时就直接显示本地天气
 			showWeather();
 		}
+		
 	}
 	
 	/**
@@ -82,7 +93,7 @@ public class WeatherActivity extends BaseActivity {
 			
 			@Override
 			public void onClick(View v) {
-				UIHelper.showSwitchCity(WeatherActivity.this);
+				UIHelper.showSwitchCity(WeatherActivity.this, true);
 			}
 		});
 		
@@ -169,6 +180,9 @@ public class WeatherActivity extends BaseActivity {
 		tvWeatherDesp.setText(prefs.getString("weather_desp", ""));
 		weatherInfoLayout.setVisibility(View.VISIBLE);
 		tvCityName.setVisibility(View.VISIBLE);
+		// 启动自动更新服务
+		Intent service = new Intent(this, AutoUpdateService.class);
+		startService(service);
 	}
 	
 	/**
@@ -190,6 +204,16 @@ public class WeatherActivity extends BaseActivity {
 		if (progressDialog != null) {
 			progressDialog.dismiss();
 		}
+	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		boolean flag = true;
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			// 是否退出应用
+			return mDoubleClickExitHelper.onKeyDown(keyCode, event);
+		}
+		return flag;
 	}
 
 }
