@@ -3,7 +3,6 @@ package com.coolweather.app.ui;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -21,6 +20,7 @@ import com.coolweather.app.R;
 import com.coolweather.app.common.DatabaseUtils;
 import com.coolweather.app.common.HttpCallbackListener;
 import com.coolweather.app.common.HttpUtils4Android;
+import com.coolweather.app.common.UIHelper;
 import com.coolweather.app.db.CoolWeatherDB;
 import com.coolweather.app.model.City;
 import com.coolweather.app.model.County;
@@ -85,6 +85,8 @@ public class ChooseAreaActivity extends BaseActivity {
 				} else if (currentLevel == LEVEL_CITY) {
 					selectedCity = cityList.get(position);
 					queryCounties();
+				} else if (currentLevel == LEVEL_COUNTY) {
+					UIHelper.showWeather(ChooseAreaActivity.this, countyList.get(position).getCountyCode());
 				}
 			}
 		});
@@ -206,10 +208,9 @@ public class ChooseAreaActivity extends BaseActivity {
 			@Override
 			public void onError(Exception e) {
 				runOnUiThread(new Runnable() {
-					@SuppressLint("ShowToast")
 					@Override
 					public void run() {
-						Toast.makeText(ChooseAreaActivity.this, "加载失败", Toast.LENGTH_SHORT);
+						Toast.makeText(ChooseAreaActivity.this, "加载失败", Toast.LENGTH_SHORT).show();
 					}
 				});
 			}

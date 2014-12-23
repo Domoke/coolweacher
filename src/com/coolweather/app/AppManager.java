@@ -95,7 +95,6 @@ public class AppManager {
 	 * 退出应用程序
 	 * Android彻底关闭当前应用(2.2版本不再有效)
 	 */
-	@SuppressWarnings("deprecation")
 	public void AppExit(Context context) {
 		try {
 			finishAllActivity();

@@ -42,7 +42,7 @@
         android:background="#27A5F9" >
 
         <TextView
-            android:id="@+id/publish_text"
+            android:id="@+id/publish_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
