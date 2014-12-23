@@ -18,10 +18,10 @@ public class HttpUtils4Android {
 					URL url = new URL(address);
 					connection = (HttpURLConnection) url.openConnection();
 					connection.setRequestMethod("GET");
-					connection.setConnectTimeout(800);
+					connection.setConnectTimeout(8000);
 					connection.setReadTimeout(8000);
-					connection.setDoInput(true);
-					connection.setDoOutput(true);
+					//connection.setDoInput(true);
+					//connection.setDoOutput(true);
 					InputStream in = connection.getInputStream();
 					BufferedReader reader = new BufferedReader(new InputStreamReader(in, "utf-8"));
 					StringBuilder response = new StringBuilder();
@@ -44,12 +44,5 @@ public class HttpUtils4Android {
 			}
 		}).start();
 		
-	}
-	
-	public interface HttpCallbackListener {
-		
-		void onFinish(String response);
-		
-		void onError(Exception e) ;
 	}
 }

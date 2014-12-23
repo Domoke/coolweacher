@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 public class MyDatabaseHelper extends SQLiteOpenHelper{
 	
@@ -22,7 +23,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper{
 			+ "id integer primary key autoincrement, "
 			+ "city_name text, "
 			+ "city_code text, "
-			+ "province_id integer";
+			+ "province_id integer)";
 	
 	/**
 	 * County表建表语句
@@ -40,6 +41,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper{
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
+		Log.d("method", "MyDatabaseHelper.onCreate");
 		db.execSQL(CREATE_PROVINCE); // 创建Province表
 		db.execSQL(CREATE_CITY); // 创建City表
 		db.execSQL(CREATE_COUNTY); // 创建County表

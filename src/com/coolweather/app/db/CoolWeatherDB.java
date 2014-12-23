@@ -7,6 +7,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.coolweather.app.model.City;
 import com.coolweather.app.model.County;
@@ -46,7 +47,7 @@ public class CoolWeatherDB {
 	 * @return
 	 */
 	public synchronized static CoolWeatherDB getInstance (Context context) {
-		if (context == null) {
+		if (coolWeatherDB == null) {
 			coolWeatherDB = new CoolWeatherDB(context);
 		}
 		return coolWeatherDB;
@@ -70,6 +71,7 @@ public class CoolWeatherDB {
 	 * @return
 	 */
 	public List<Province> loadProvinces() {
+		Log.d("method", "loadProvinces");
 		List<Province> list = new ArrayList<Province>();
 		Cursor cursor = db.query(TABLE_PROVINCE, null, null, null, null, null, null);
 		if (cursor != null) {

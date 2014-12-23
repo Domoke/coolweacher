@@ -1,6 +1,7 @@
 package com.coolweather.app.common;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.coolweather.app.db.CoolWeatherDB;
 import com.coolweather.app.model.City;
@@ -19,6 +20,7 @@ public class DatabaseUtils {
 	 * @return
 	 */
 	public synchronized static boolean handleProvincesResponse(CoolWeatherDB db, String response) {
+		Log.d("method", "handleProvincesResponse response:" + response);
 		if(!TextUtils.isEmpty(response)) {
 			String[] allProvinces = response.split(COMMA_SYMBOL_EN);
 			if (allProvinces != null && allProvinces.length > 0) {
