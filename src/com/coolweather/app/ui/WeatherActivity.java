@@ -155,6 +155,7 @@ public class WeatherActivity extends BaseActivity {
 							}
 						});
 					} else {
+						closeProgressDialog();
 						Toast.makeText(WeatherActivity.this, "加载失败", Toast.LENGTH_SHORT).show();
 					}
 				}
@@ -162,6 +163,7 @@ public class WeatherActivity extends BaseActivity {
 			
 			@Override
 			public void onError(Exception e) {
+				closeProgressDialog();
 				Toast.makeText(WeatherActivity.this, "加载失败", Toast.LENGTH_SHORT).show();
 			}
 		});

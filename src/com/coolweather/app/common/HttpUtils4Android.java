@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import android.os.Looper;
+
 public class HttpUtils4Android {
 	
 	public static void sendHttpRequest(final String address, final HttpCallbackListener listener) {
@@ -13,6 +15,7 @@ public class HttpUtils4Android {
 			
 			@Override
 			public void run() {
+				Looper.prepare();
 				HttpURLConnection connection = null;
 				try {
 					URL url = new URL(address);
@@ -41,6 +44,7 @@ public class HttpUtils4Android {
 						connection.disconnect();
 					}
 				}
+				Looper.loop();
 			}
 		}).start();
 		
