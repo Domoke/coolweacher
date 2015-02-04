@@ -1,5 +1,10 @@
 package com.coolweather.app.ui;
 
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
+
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -21,6 +26,7 @@ import com.coolweather.app.common.DatabaseUtils;
 import com.coolweather.app.common.DoubleClickExitHelper;
 import com.coolweather.app.common.HttpCallbackListener;
 import com.coolweather.app.common.HttpUtils4Android;
+import com.coolweather.app.common.LogUtils;
 import com.coolweather.app.common.UIHelper;
 import com.coolweather.app.service.AutoUpdateService;
 
@@ -37,7 +43,14 @@ public class WeatherActivity extends BaseActivity {
 	private TextView tvTemp1;
 	private TextView tvTemp2;
 	
+	private Button btnCity1;
+	private Button btnCity2;
+	private Button btnCity3;
+	
 	private String countyCode;
+	
+	// 存储城市信息
+	private Map<String, String> cityMap = new HashMap<String, String>();
 	
 	/**
 	 * 进度条对话框
@@ -88,6 +101,9 @@ public class WeatherActivity extends BaseActivity {
 		tvTemp1 = (TextView) findViewById(R.id.temp1);
 		tvTemp2 = (TextView) findViewById(R.id.temp2);
 		tvWeatherDesp = (TextView) findViewById(R.id.weather_desp);
+		btnCity1 = (Button) findViewById(R.id.city1);
+		btnCity2 = (Button) findViewById(R.id.city2);
+		btnCity3 = (Button) findViewById(R.id.city3);
 		
 		switchCity.setOnClickListener(new OnClickListener() {
 			
@@ -102,6 +118,42 @@ public class WeatherActivity extends BaseActivity {
 			@Override
 			public void onClick(View v) {
 				queryWeatherCode(countyCode);
+			}
+		});
+		
+		btnCity1.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				String cityName = (String) btnCity1.getText();
+				if (!TextUtils.isEmpty(cityName)) {
+					LogUtils.d("method", cityMap.get(cityName));
+					queryWeatherInfo(cityMap.get(cityName));
+				}
+			}
+		});
+		
+		btnCity2.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				String cityName = (String) btnCity2.getText();
+				if (!TextUtils.isEmpty(cityName)) {
+					LogUtils.d("method", cityMap.get(cityName));
+					queryWeatherInfo(cityMap.get(cityName));
+				}
+			}
+		});
+		
+		btnCity3.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				String cityName = (String) btnCity3.getText();
+				if (!TextUtils.isEmpty(cityName)) {
+					LogUtils.d("method", cityMap.get(cityName));
+					queryWeatherInfo(cityMap.get(cityName));
+				}
 			}
 		});
 	}
@@ -182,6 +234,31 @@ public class WeatherActivity extends BaseActivity {
 		tvWeatherDesp.setText(prefs.getString("weather_desp", ""));
 		weatherInfoLayout.setVisibility(View.VISIBLE);
 		tvCityName.setVisibility(View.VISIBLE);
+		Set<String> citySet = prefs.getStringSet("city_set", new LinkedHashSet<String>(3));
+		for (String string : citySet) {
+			// cityName|weatherCode
+			String[] array = string.split("\\|");
+			cityMap.put(array[0], array[1]);
+			LogUtils.d("method", string);
+		}
+		if(!cityMap.isEmpty()) {
+			int i = 1;
+			for (String str : cityMap.keySet()) {
+				if(i == 1) {
+					btnCity1.setText(str);
+					btnCity1.setVisibility(View.VISIBLE);
+				}
+				if(i == 2) {
+					btnCity2.setText(str);
+					btnCity2.setVisibility(View.VISIBLE);
+				}
+				if(i == 3) {
+					btnCity3.setText(str);
+					btnCity3.setVisibility(View.VISIBLE);
+				}
+				i++;
+			}
+		}
 		// 启动自动更新服务
 		Intent service = new Intent(this, AutoUpdateService.class);
 		startService(service);

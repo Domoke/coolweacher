@@ -1,8 +1,12 @@
 package com.coolweather.app.common;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,6 +26,7 @@ public class DatabaseUtils {
 	
 	public static final String COMMA_SYMBOL_EN = ",";
 	public static final String VERTICAL_LINE = "\\|";
+	private static List<String> lst = new ArrayList<String>();
 	
 	/**
 	 * 解析天气代码
@@ -78,7 +83,9 @@ public class DatabaseUtils {
 	public static void saveWeatherInfo(Context context, String cityName, 
 			String weatherCode, String temp1, String temp2, String weatherDesp, String publishTime) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy年M月d日", Locale.CHINA);
-		SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+		Set<String> citySet = prefs.getStringSet("city_set", new LinkedHashSet<String>(3));
+		SharedPreferences.Editor editor = prefs.edit();
 		editor.putBoolean("city_selected", true);
 		editor.putString("city_name", cityName);
 		editor.putString("weather_code", weatherCode);
@@ -87,6 +94,12 @@ public class DatabaseUtils {
 		editor.putString("temp2", temp2);
 		editor.putString("publish_time", publishTime);
 		editor.putString("current_date", sdf.format(new Date()));
+		for (String string : citySet) {
+			addPopLst(string);
+		}
+		addPopLst(cityName.trim() + "|" + weatherCode.trim());
+		citySet.addAll(lst);
+		editor.putStringSet("city_set", citySet);
 		editor.commit();
 	}
 	
@@ -163,5 +176,23 @@ public class DatabaseUtils {
 		}
 		return false;
 	}
+	
+	
+    /**
+     * Java用ArrayList实现先进先出的队列通用方法,同时去除重复了
+     * @param newstr
+     * @return
+     */
+    public static List<String> addPopLst(String newstr){
+    	if(!TextUtils.isEmpty(newstr)){
+    		if(lst.contains(newstr))
+    			return lst;
+    		lst.add(0,newstr);
+        	if(lst.size()>3){
+        		lst.remove(3);
+        	}
+    	}
+    	return lst;
+    }
 
 }
